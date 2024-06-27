@@ -1,0 +1,133 @@
+#include <stdio.h>
+
+#include <stdlib.h>
+
+#include <time.h>
+
+
+
+void quickSort(int arr[], int low, int high);
+
+int partition(int arr[], int low, int high);
+
+void swap(int *a, int *b);
+
+void generateRandomArray(int arr[], int n);
+
+double calculateTimeTaken(clock_t start, clock_t end);
+
+int main() {
+
+ int n_values[] = {5000, 10000, 15000, 20000}; 
+
+ int num_values = sizeof(n_values) / sizeof(n_values[0]);
+
+ clock_t start, end;
+
+ double time_taken[num_values];
+
+ for (int i = 0; i < num_values; i++) {
+
+ int n = n_values[i];
+
+ int *arr = (int*)malloc(n * sizeof(int));
+
+ generateRandomArray(arr, n);
+
+ start = clock();
+
+ quickSort(arr, 0, n - 1);
+
+ end = clock();
+
+ time_taken[i] = calculateTimeTaken(start, end);
+
+ free(arr);
+ }
+
+
+
+ printf("n\tTime Taken (s)\n");
+
+ for (int i = 0; i < num_values; i++) {
+
+ printf("%d\t%f\n", n_values[i], time_taken[i]);
+
+ }
+
+
+
+ return 0;
+
+}
+
+
+void quickSort(int arr[], int low, int high) {
+
+ if (low < high) {
+
+ int pi = partition(arr, low, high);
+
+ quickSort(arr, low, pi - 1);
+
+ quickSort(arr, pi + 1, high);
+
+ }
+
+}
+
+
+
+int partition(int arr[], int low, int high) {
+
+ int pivot = arr[high];
+
+ int i = low - 1;
+
+ for (int j = low; j < high; j++) {
+
+ if (arr[j] <= pivot) {
+
+ i++;
+
+ swap(&arr[i], &arr[j]);
+
+ }
+
+ }
+ swap(&arr[i + 1], &arr[high]);
+
+ return (i + 1);
+
+}
+
+
+
+void swap(int *a, int *b) {
+
+ int temp = *a;
+
+ *a = *b;
+
+ *b = temp;
+}
+
+void generateRandomArray(int arr[], int n) {
+
+ srand(time(NULL));
+
+ for (int i = 0; i < n; i++) {
+
+ arr[i] = rand();
+
+ }
+
+}
+
+// Function to calculate time taken
+
+double calculateTimeTaken(clock_t start, clock_t end) {
+
+ return ((double)(end - start)) / CLOCKS_PER_SEC;
+
+}
